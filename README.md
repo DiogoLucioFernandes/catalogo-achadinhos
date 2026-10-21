@@ -2,6 +2,8 @@
 
 Página de catálogo de produtos de afiliados (Shopee) com busca, categorias e destaque dos mais vendidos. O dono do catálogo gerencia os produtos por uma **planilha do Google**, sem mexer em código.
 
+> Este repositório traz uma **versão de demonstração**, com produtos fictícios e links de exemplo.
+
 ## O que ele faz
 
 - Lista de produtos com **busca** (ignora acentos e maiúsculas), **filtro por categoria** e botão "Ver mais" (30 por vez).
@@ -35,7 +37,7 @@ Desenvolvi com apoio de IA e vou estudar o código para entender cada parte, pri
 2. Em Extensões → Apps Script, cole o `backend/Code.gs`, troque a `SENHA` e implante como aplicativo da web.
 3. Publique a planilha como CSV (Arquivo → Compartilhar → Publicar na web).
 4. No `index.html`, preencha o bloco `CONFIG` (`api` e `csv`).
-5. Adicione `logo.png` e `favicon.png` na mesma pasta.
+5. Troque `logo.png`, `favicon.png` e `products.json` pelos seus. Os que vêm no repositório são de **demonstração** (produtos fictícios, com links de exemplo).
 
 > Os links reais da planilha e do Apps Script foram removidos deste repositório.
 

@@ -1,0 +1,117 @@
+{
+  "perfil": {},
+  "produtos": [
+    {
+      "nome": "Fone de ouvido sem fio",
+      "categoria": "Eletrônicos",
+      "preco": "R$ 79,90",
+      "link": "https://example.com/produto-01",
+      "imagem": "imagens/p01.svg",
+      "destaque": true
+    },
+    {
+      "nome": "Carregador portátil 10.000 mAh",
+      "categoria": "Eletrônicos",
+      "preco": "R$ 69,90",
+      "link": "https://example.com/produto-02",
+      "imagem": "imagens/p02.svg",
+      "destaque": true
+    },
+    {
+      "nome": "Suporte de celular para mesa",
+      "categoria": "Eletrônicos",
+      "preco": "R$ 19,90",
+      "link": "https://example.com/produto-03",
+      "imagem": "imagens/p03.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Luminária de mesa LED",
+      "categoria": "Casa",
+      "preco": "R$ 39,90",
+      "link": "https://example.com/produto-04",
+      "imagem": "imagens/p04.svg",
+      "destaque": true
+    },
+    {
+      "nome": "Organizador de gavetas",
+      "categoria": "Casa",
+      "preco": "R$ 24,90",
+      "link": "https://example.com/produto-05",
+      "imagem": "imagens/p05.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Jogo de toalhas de banho",
+      "categoria": "Casa",
+      "preco": "R$ 59,90",
+      "link": "https://example.com/produto-06",
+      "imagem": "imagens/p06.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Cesto de roupas dobrável",
+      "categoria": "Casa",
+      "preco": "R$ 29,90",
+      "link": "https://example.com/produto-07",
+      "imagem": "imagens/p07.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Garrafa térmica 500 ml",
+      "categoria": "Cozinha",
+      "preco": "R$ 49,90",
+      "link": "https://example.com/produto-08",
+      "imagem": "imagens/p08.svg",
+      "destaque": true
+    },
+    {
+      "nome": "Jogo de potes herméticos",
+      "categoria": "Cozinha",
+      "preco": "R$ 34,90",
+      "link": "https://example.com/produto-09",
+      "imagem": "imagens/p09.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Escorredor de louças",
+      "categoria": "Cozinha",
+      "preco": "R$ 44,90",
+      "link": "https://example.com/produto-10",
+      "imagem": "imagens/p10.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Kit de pincéis de maquiagem",
+      "categoria": "Beleza",
+      "preco": "R$ 27,90",
+      "link": "https://example.com/produto-11",
+      "imagem": "imagens/p11.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Secador de cabelo compacto",
+      "categoria": "Beleza",
+      "preco": "R$ 89,90",
+      "link": "https://example.com/produto-12",
+      "imagem": "imagens/p12.svg",
+      "destaque": false
+    },
+    {
+      "nome": "Mochila resistente à água",
+      "categoria": "Moda",
+      "preco": "R$ 64,90",
+      "link": "https://example.com/produto-13",
+      "imagem": "imagens/p13.svg",
+      "destaque": true
+    },
+    {
+      "nome": "Boné ajustável",
+      "categoria": "Moda",
+      "preco": "R$ 22,90",
+      "link": "https://example.com/produto-14",
+      "imagem": "imagens/p14.svg",
+      "destaque": false
+    }
+  ]
+}
