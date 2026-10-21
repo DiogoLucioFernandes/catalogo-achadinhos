@@ -29,13 +29,19 @@ h2{font-family:"Lilita One",Nunito,sans-serif;font-weight:400;font-size:1.3rem;c
 .item{display:flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px;margin-bottom:10px;text-decoration:none;color:inherit}
 .thumb{width:84px;height:84px;border-radius:12px;flex:none;object-fit:cover;background:#ffe9d6;display:grid;place-items:center;font-size:2rem}
 .info{flex:1;min-width:0}
-.nome{font-weight:800;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.95rem}
+.nome{font-weight:800;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:.95rem}
 .preco{color:var(--l2);font-weight:800;font-size:1.05rem}
 .btn{flex:none;background:linear-gradient(var(--l1),var(--l2));color:#fff;font-weight:800;padding:10px 14px;border-radius:10px;font-size:.9rem;text-align:center;box-shadow:0 3px 0 var(--dk)}
 .tcard .btn{padding:8px}
 .maisbtn{display:block;width:100%;font:inherit;font-weight:800;padding:14px;border-radius:14px;border:2px solid var(--l2);background:#fff;color:var(--dk);cursor:pointer;margin-top:6px}
 .vazio{text-align:center;color:var(--mut);padding:32px 0;font-weight:700}
 .rodape{text-align:center;color:var(--mut);font-size:.8rem;margin-top:24px}
+
+/* Arrastar com o mouse (computador) e barra de rolagem fina visível */
+.top,.cats{cursor:grab}
+.top.arrastando,.cats.arrastando{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.top img,.cats button{-webkit-user-drag:none}
+@media (hover:hover){.top,.cats{scrollbar-width:thin;scrollbar-color:var(--l2) transparent}}
 </style>
 </head>
 <body>
@@ -90,10 +96,10 @@ function render(){
   const r=dados.produtos.filter(p=>(cat==="Todos"||p.categoria===cat)&&norm(p.nome+" "+p.categoria).includes(q));
   const top=dados.produtos.filter(p=>p.destaque).slice(0,10);
   $("topo").hidden=!(top.length&&cat==="Todos"&&!q);
-  $("top").innerHTML=top.map((p,i)=>`<a class="tcard" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))"><span class="pos">${i+1}º</span>${img(p)}<div class="nome">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}<span class="btn">Quero!</span></a>`).join("");
+  $("top").innerHTML=top.map((p,i)=>`<a class="tcard" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))"><span class="pos">${i+1}º</span>${img(p)}<div class="nome" title="${esc(p.nome)}">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}<span class="btn">Quero!</span></a>`).join("");
   $("tit").textContent=q?"Resultado da busca":cat==="Todos"?"Todos os produtos":cat;
   $("mais").hidden=r.length<=lim;
-  $("lista").innerHTML=r.length?r.slice(0,lim).map(p=>`<a class="item" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))">${img(p)}<div class="info"><div class="nome">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}</div><span class="btn">Ver na Shopee</span></a>`).join(""):`<p class="vazio">Nenhum produto encontrado. Tente outra palavra.</p>`;
+  $("lista").innerHTML=r.length?r.slice(0,lim).map(p=>`<a class="item" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))">${img(p)}<div class="info"><div class="nome" title="${esc(p.nome)}">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}</div><span class="btn">Ver na Shopee</span></a>`).join(""):`<p class="vazio">Nenhum produto encontrado. Tente outra palavra.</p>`;
 }
 const PLANILHA_CSV=CONFIG.csv;
 function csv(t){const r=[];let l=[],c="",q=false;for(let i=0;i<t.length;i++){const h=t[i];
@@ -112,6 +118,25 @@ perfil.then(async d=>{
 }).catch(()=>{$("lista").innerHTML='<p class="vazio">Não foi possível carregar os produtos.</p>'});
 $("busca").oninput=()=>{lim=30;render()};
 $("mais").onclick=()=>{lim+=30;render()};
+
+// Permite arrastar os carrosséis com o mouse. No celular, o toque já rola sozinho.
+function arrastar(el){
+  let ativo=false,moveu=false,x0=0,s0=0;
+  el.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;ativo=true;moveu=false;x0=e.clientX;s0=el.scrollLeft});
+  window.addEventListener("pointermove",e=>{
+    if(!ativo)return;
+    const dx=e.clientX-x0;
+    if(Math.abs(dx)>5){moveu=true;el.classList.add("arrastando")}
+    if(moveu)el.scrollLeft=s0-dx;
+  });
+  window.addEventListener("pointerup",()=>{if(!ativo)return;ativo=false;setTimeout(()=>el.classList.remove("arrastando"),0)});
+  el.addEventListener("dragstart",e=>e.preventDefault());
+  // depois de arrastar, não deixa o clique abrir o link ou trocar a categoria
+  el.addEventListener("click",e=>{if(moveu){e.preventDefault();e.stopPropagation();moveu=false}},true);
+}
+arrastar($("top"));
+arrastar($("cats"));
+
 </script>
 </body>
 </html>
