@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f2500f">
+<title>XII Comprei | Achadinhos da Shopee</title>
+<link rel="icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--l1:#ff8a1f;--l2:#f2500f;--dk:#c23a07;--sun:#ffc83d;--ink:#2b1a12;--mut:#8a6a5c;--bg:#fff8f1;--card:#fff;--line:#f4d9c6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;line-height:1.35}
+header{background:radial-gradient(circle at 50% 0,var(--sun) -20%,var(--l1) 35%,var(--l2) 100%);text-align:center;padding:26px 16px 70px;color:#fff}
+.logo{width:104px;height:104px;border-radius:50%;border:4px solid #fff;box-shadow:0 6px 18px rgba(120,30,0,.35)}
+h1{font-family:"Lilita One",Nunito,sans-serif;font-weight:400;font-size:2.1rem;margin:10px 0 2px;text-shadow:0 3px 0 var(--dk)}
+.desc{margin:0;font-weight:700;text-shadow:0 1px 2px rgba(120,30,0,.4)}
+main{max-width:560px;margin:-46px auto 0;padding:0 16px 48px}
+.busca{width:100%;padding:15px 18px;font:inherit;font-weight:700;font-size:1rem;border:3px solid var(--sun);border-radius:14px;background:#fff;color:var(--ink);box-shadow:0 6px 16px rgba(120,30,0,.18)}
+:focus-visible{outline:3px solid var(--dk);outline-offset:2px}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:16px 0 6px;scrollbar-width:none}
+.cats button{flex:none;font:inherit;font-weight:800;padding:8px 16px;border-radius:99px;border:2px solid var(--line);background:#fff;color:var(--dk);cursor:pointer}
+.cats button[aria-pressed=true]{background:var(--l2);border-color:var(--dk);color:#fff}
+h2{font-family:"Lilita One",Nunito,sans-serif;font-weight:400;font-size:1.3rem;color:var(--dk);margin:20px 0 10px}
+.top{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tcard{flex:none;width:148px;scroll-snap-align:start;background:var(--card);border:2px solid var(--sun);border-radius:16px;padding:8px;text-decoration:none;color:inherit;position:relative;display:flex;flex-direction:column;gap:6px}
+.tcard .thumb{width:100%;height:auto;aspect-ratio:1;border-radius:10px}
+.pos{position:absolute;top:4px;left:4px;z-index:1;background:var(--l2);color:#fff;font-family:"Lilita One",sans-serif;border-radius:99px;padding:1px 10px;font-size:.9rem;border:2px solid #fff}
+.item{display:flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px;margin-bottom:10px;text-decoration:none;color:inherit}
+.thumb{width:84px;height:84px;border-radius:12px;flex:none;object-fit:cover;background:#ffe9d6;display:grid;place-items:center;font-size:2rem}
+.info{flex:1;min-width:0}
+.nome{font-weight:800;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.95rem}
+.preco{color:var(--l2);font-weight:800;font-size:1.05rem}
+.btn{flex:none;background:linear-gradient(var(--l1),var(--l2));color:#fff;font-weight:800;padding:10px 14px;border-radius:10px;font-size:.9rem;text-align:center;box-shadow:0 3px 0 var(--dk)}
+.tcard .btn{padding:8px}
+.maisbtn{display:block;width:100%;font:inherit;font-weight:800;padding:14px;border-radius:14px;border:2px solid var(--l2);background:#fff;color:var(--dk);cursor:pointer;margin-top:6px}
+.vazio{text-align:center;color:var(--mut);padding:32px 0;font-weight:700}
+.rodape{text-align:center;color:var(--mut);font-size:.8rem;margin-top:24px}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="logo.png" alt="Logo">
+  <h1 id="nome"></h1>
+  <p class="desc" id="desc"></p>
+</header>
+<main>
+  <input type="search" class="busca" id="busca" placeholder="🔍 Buscar produto (ex: fone, panela...)" aria-label="Buscar produto">
+  <div class="cats" id="cats" role="group" aria-label="Categorias"></div>
+  <section id="topo" hidden><h2>🔥 Mais vendidos</h2><div class="top" id="top"></div></section>
+  <h2 id="tit">Todos os produtos</h2>
+  <div id="lista"></div>
+  <button id="mais" class="maisbtn" hidden>Ver mais produtos</button>
+  <p class="rodape">Ao comprar pelos links, posso receber uma pequena comissão, sem custo extra para você.</p>
+</main>
+<script>
+let dados={perfil:{},produtos:[]},cat="Todos",lim=30;
+const $=id=>document.getElementById(id);
+const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const img=p=>p.imagem?`<img class="thumb" src="${esc(p.imagem)}" alt="" loading="lazy">`:`<div class="thumb">🛍️</div>`;
+
+// ===== CONFIGURE AQUI (tudo que muda de cliente para cliente) =====
+const CONFIG={
+  nome:"Nome da Loja",
+  descricao:"Achadinhos da Shopee com desconto. Escolha, clique e compre!",
+  cor:"#f2500f",        // cor principal
+  corClara:"#ff8a1f",   // cor clara (degradê)
+  corEscura:"#c23a07",  // cor escura (sombras)
+  whatsapp:"",          // ex.: 5562999999999 (deixe vazio para não mostrar o botão)
+  api:"COLE_AQUI_A_URL_DO_APPS_SCRIPT",
+  csv:"COLE_AQUI_O_LINK_DA_PLANILHA_PUBLICADA_COMO_CSV"
+};
+// ===== FIM DA CONFIGURAÇÃO =====
+const API_URL=CONFIG.api;
+{const s=document.documentElement.style;s.setProperty('--l2',CONFIG.cor);s.setProperty('--l1',CONFIG.corClara);s.setProperty('--dk',CONFIG.corEscura);document.title=CONFIG.nome+" | Achadinhos da Shopee"}
+if(CONFIG.whatsapp){const a=document.createElement('a');a.href='https://wa.me/'+CONFIG.whatsapp;a.target='_blank';a.rel='noopener';a.textContent='💬 WhatsApp';a.style.cssText='position:fixed;right:14px;bottom:14px;background:#25d366;color:#fff;font-weight:800;padding:12px 16px;border-radius:99px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.25)';document.body.appendChild(a)}
+function contar(link){
+  if(!API_URL.startsWith("http"))return;
+  try{fetch(API_URL+"?click="+encodeURIComponent(link),{mode:"no-cors",keepalive:true})}catch(e){}
+}
+
+function cats(){
+  const l=["Todos",...new Set(dados.produtos.map(p=>p.categoria).filter(Boolean))];
+  $("cats").innerHTML=l.map(c=>`<button aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $("cats").querySelectorAll("button").forEach(b=>b.onclick=()=>{cat=b.dataset.c;lim=30;cats();render()});
+}
+function render(){
+  const q=norm($("busca").value);
+  const r=dados.produtos.filter(p=>(cat==="Todos"||p.categoria===cat)&&norm(p.nome+" "+p.categoria).includes(q));
+  const top=dados.produtos.filter(p=>p.destaque).slice(0,10);
+  $("topo").hidden=!(top.length&&cat==="Todos"&&!q);
+  $("top").innerHTML=top.map((p,i)=>`<a class="tcard" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))"><span class="pos">${i+1}º</span>${img(p)}<div class="nome">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}<span class="btn">Quero!</span></a>`).join("");
+  $("tit").textContent=q?"Resultado da busca":cat==="Todos"?"Todos os produtos":cat;
+  $("mais").hidden=r.length<=lim;
+  $("lista").innerHTML=r.length?r.slice(0,lim).map(p=>`<a class="item" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" onclick="contar(this.getAttribute('href'))">${img(p)}<div class="info"><div class="nome">${esc(p.nome)}</div>${p.preco?`<div class="preco">${esc(p.preco)}</div>`:""}</div><span class="btn">Ver na Shopee</span></a>`).join(""):`<p class="vazio">Nenhum produto encontrado. Tente outra palavra.</p>`;
+}
+const PLANILHA_CSV=CONFIG.csv;
+function csv(t){const r=[];let l=[],c="",q=false;for(let i=0;i<t.length;i++){const h=t[i];
+  if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=h}
+  else if(h=='"')q=true;else if(h==","){l.push(c);c=""}
+  else if(h=="\n"||h=="\r"){if(h=="\r"&&t[i+1]=="\n")i++;l.push(c);r.push(l);l=[];c=""}else c+=h}
+  if(c||l.length){l.push(c);r.push(l)}return r}
+function daPlanilha(t){const [h,...rs]=csv(t);const k=h.map(x=>norm(x).trim());
+  return rs.filter(r=>r.some(x=>x.trim())).map(r=>{const o={};k.forEach((n,i)=>o[n]=(r[i]||"").trim());
+    return{nome:o.nome,categoria:o.categoria||"Outros",preco:o.preco,link:o.link,imagem:o.imagem,destaque:/^(sim|s|1|x|true)$/i.test(o.maisvendido||""),ativo:!/^(nao|n|0|false|off)$/i.test(norm(o.ativo||""))}}).filter(p=>p.nome&&p.link&&p.ativo).reverse()}
+function iniciar(d){dados=d;$("nome").textContent=CONFIG.nome;$("desc").textContent=CONFIG.descricao;cats();render()}
+const perfil=fetch("products.json?"+Date.now()).then(r=>r.json()).catch(()=>({perfil:{},produtos:[]}));
+perfil.then(async d=>{
+  if(PLANILHA_CSV.startsWith("http")){try{d.produtos=daPlanilha(await (await fetch(PLANILHA_CSV+"&t="+Date.now())).text())}catch(e){}}
+  iniciar(d);
+}).catch(()=>{$("lista").innerHTML='<p class="vazio">Não foi possível carregar os produtos.</p>'});
+$("busca").oninput=()=>{lim=30;render()};
+$("mais").onclick=()=>{lim+=30;render()};
+</script>
+</body>
+</html>
